@@ -49,13 +49,13 @@ public class JwtTokenUtil implements Serializable{
 		
 		String userName = getUserNameFromToken(token);
 		
-		if(userName.equals(userDetails.getUsername()) && !isTokeExpired(token)) {
+		if(userName.equals(userDetails.getUsername()) && !isTokenExpired(token)) {
 			return true;
 		}
 		return false;
 	}
 
-	private boolean isTokeExpired(String token) {
+	private boolean isTokenExpired(String token) {
 		
 		Date expirationDate = getExpirationDateFromToken(token);
 		

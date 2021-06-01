@@ -2,6 +2,8 @@ package com.user.auth.controller;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,9 +12,9 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.user.auth.jwt.JwtTokenUtil;
@@ -23,9 +25,9 @@ import com.user.auth.model.UserDTO;
 import com.user.auth.service.JwtUserDetailsService;
 
 @RestController
-@RequestMapping("auth")
 public class AuthenticationController {
-	
+	protected final Log logger = LogFactory.getLog(AuthenticationController.class);
+
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 	
@@ -35,26 +37,29 @@ public class AuthenticationController {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
-	@PostMapping("/register")
+	@PostMapping("/api/v1.0/user/register")
 	public ResponseEntity<DAOUser> registerUser(@RequestBody UserDTO user) {
-		
-		System.out.println("register called.......");
 		
 		return ResponseEntity.ok(jwtUserDetailsService.save(user));
 		
 	}
 	
-	@GetMapping("users")
+    //@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	@GetMapping("/api/v1.0/user/all")
 	public ResponseEntity<List<DAOUser>> getAllUsers() {
 		return ResponseEntity.ok(jwtUserDetailsService.getAllUser());
 	}
 	
-	@PostMapping("/authenticate")
+	@GetMapping("/api/v1.0/user/username/{username}")
+	public ResponseEntity<DAOUser> getUserByUserName(@PathVariable String username) {
+		return ResponseEntity.ok(jwtUserDetailsService.getUserByUserName(username));
+	}
+	
+	@PostMapping("/api/v1.0/user/authenticate")
 	private ResponseEntity<JwtResponse> createAuthenticationToken(@RequestBody JwtRequest request) throws Exception {
 		
-		System.out.println("authenticate api calling........");
-		System.out.println("u:"+request.getUsername());
-		System.out.println("p:"+request.getPassword());
+		logger.info("authenticate api calling........");
+		logger.info("username:"+request.getUsername());
 
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
@@ -67,9 +72,16 @@ public class AuthenticationController {
 		}
 		
 		final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(request.getUsername());
+		
 		final String token = jwtTokenUtil.generateToken(userDetails);
-
+		logger.info("JWT Token created successfully");
+		
 		return ResponseEntity.ok(new JwtResponse(token));
+	}
+	
+	@GetMapping("/api/v1.0/user/userid/{userid}")
+	public ResponseEntity<DAOUser> getUserByUserId(@PathVariable long userid) {
+		return ResponseEntity.ok(jwtUserDetailsService.getUserByUserId(userid));
 	}
 	
 }

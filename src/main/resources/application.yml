@@ -1,6 +1,6 @@
 server:
    port: 8091
-  
+
 eureka: 
    client: 
       serviceUrl: 
@@ -8,5 +8,7 @@ eureka:
 spring:
   application:
     name: auth-service
+    
+   
   
 

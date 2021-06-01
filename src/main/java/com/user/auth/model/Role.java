@@ -26,8 +26,8 @@ public class Role {
     @Column
     private String description;
     
-    @ManyToMany(cascade=CascadeType.ALL, mappedBy="roles")
-	private Collection<DAOUser> users=new ArrayList<DAOUser>();
+//    @ManyToMany(cascade=CascadeType.ALL, mappedBy="roles")
+//	private Collection<DAOUser> users=new ArrayList<DAOUser>();
 
 	public String getName() {
 		return name;
@@ -45,13 +45,13 @@ public class Role {
 		this.description = description;
 	}
 
-	public Collection<DAOUser> getUsers() {
-		return users;
-	}
-
-	public void setUsers(Collection<DAOUser> users) {
-		this.users = users;
-	}
+//	public Collection<DAOUser> getUsers() {
+//		return users;
+//	}
+//
+//	public void setUsers(Collection<DAOUser> users) {
+//		this.users = users;
+//	}
     
     
 

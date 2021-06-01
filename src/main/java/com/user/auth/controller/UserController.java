@@ -1,10 +1,9 @@
 package com.user.auth.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +18,7 @@ public class UserController {
 	@Autowired
 	private JwtUserDetailsService jwtUserDetailsService;
 	
-	@PostMapping("/register")
+	@PostMapping("/register-test")
 	public ResponseEntity<DAOUser> registerUser(@RequestBody UserDTO user) {
 		
 		System.out.println("register called.......");
@@ -28,9 +27,12 @@ public class UserController {
 		
 	}
 	
-	@GetMapping("users")
-	public ResponseEntity<List<DAOUser>> getAllUsers() {
-		return ResponseEntity.ok(jwtUserDetailsService.getAllUser());
+	@GetMapping("/user/{userid}")
+	public ResponseEntity<DAOUser> getUser(@PathVariable long userid) {
+		
+		System.out.println("=======getUser======"+userid);
+		
+		return ResponseEntity.ok(jwtUserDetailsService.getUserByUserId(userid));
 	}
 	
 	
